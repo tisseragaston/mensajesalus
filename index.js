@@ -1,6 +1,6 @@
 const express = require('express');
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode');
+const qrcodeTerminal = require('qrcode-terminal');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -12,16 +12,10 @@ const client = new Client({
 });
 
 // Evento para manejar el código QR
-client.on('qr', async (qr) => {
-    try {
-        // Generar el QR como imagen de datos
-        const qrImage = await qrcode.toDataURL(qr);
-        console.log(`QR Code generated: ${qrImage}`); // Muestra la URL en el log
-        // Puedes también agregar una ruta para mostrar el QR
-        console.log(`Access the QR code at: https://mensajesalus.onrender.com/qr`);
-    } catch (err) {
-        console.error('Error generating QR code:', err);
-    }
+client.on('qr', (qr) => {
+    // Mostrar el código QR en la terminal
+    qrcodeTerminal.generate(qr, { small: true });
+    console.log('QR Code generado. Escanea el código en WhatsApp.');
 });
 
 // Evento que se dispara cuando el cliente está listo
@@ -40,16 +34,6 @@ app.post('/send-message', (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Error al enviar el mensaje' });
     });
-});
-
-// Ruta para acceder al QR en formato de imagen
-app.get('/qr', async (req, res) => {
-    try {
-        const qrImage = await qrcode.toDataURL(qr); // Genera el QR
-        res.send(`<img src="${qrImage}" alt="QR Code">`); // Muestra el QR como imagen
-    } catch (err) {
-        res.status(500).send('Error generating QR image.');
-    }
 });
 
 // Inicia el cliente y el servidor
