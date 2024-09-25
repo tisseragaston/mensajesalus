@@ -1,5 +1,6 @@
 const express = require('express');
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -10,10 +11,20 @@ const client = new Client({
     authStrategy: new LocalAuth()
 });
 
-client.on('qr', qr => {
-    // Aquí puedes manejar el código QR si lo necesitas
+// Evento para manejar el código QR
+client.on('qr', async (qr) => {
+    try {
+        // Generar el QR como imagen de datos
+        const qrImage = await qrcode.toDataURL(qr);
+        console.log(`QR Code generated: ${qrImage}`); // Muestra la URL en el log
+        // Puedes también agregar una ruta para mostrar el QR
+        console.log(`Access the QR code at: https://mensajesalus.onrender.com/qr`);
+    } catch (err) {
+        console.error('Error generating QR code:', err);
+    }
 });
 
+// Evento que se dispara cuando el cliente está listo
 client.on('ready', () => {
     console.log('Cliente listo');
 });
@@ -31,10 +42,19 @@ app.post('/send-message', (req, res) => {
     });
 });
 
+// Ruta para acceder al QR en formato de imagen
+app.get('/qr', async (req, res) => {
+    try {
+        const qrImage = await qrcode.toDataURL(qr); // Genera el QR
+        res.send(`<img src="${qrImage}" alt="QR Code">`); // Muestra el QR como imagen
+    } catch (err) {
+        res.status(500).send('Error generating QR image.');
+    }
+});
+
 // Inicia el cliente y el servidor
 client.initialize();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-
