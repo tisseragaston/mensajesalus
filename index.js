@@ -58,3 +58,10 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+const http = require('http');
+
+setInterval(() => {
+    http.get('https://mensajesalus.onrender.com'); // Cambia a tu URL de producción
+    console.log('Ping enviado al servidor para mantenerlo activo.');
+}, 60000); // 1 minuto
