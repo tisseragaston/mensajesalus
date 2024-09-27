@@ -18,6 +18,21 @@ const client = new Client({
 
 let latestQr = ''; // Variable para almacenar el último código QR generado
 
+client.on('ready', () => {
+    console.log('Cliente listo para enviar mensajes');
+});
+
+// Evento para manejar fallos en la autenticación
+client.on('auth_failure', (msg) => {
+    console.error('Fallo en la autenticación: ', msg);
+});
+
+// Evento para manejar la desconexión del cliente
+client.on('disconnected', (reason) => {
+    console.log('Cliente desconectado: ', reason);
+    client.initialize(); // Reintentar conexión
+});
+
 // Evento para manejar el código QR
 client.on('qr', async (qr) => {
     try {
