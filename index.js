@@ -92,6 +92,11 @@ app.get('/qr', async (req, res) => {
     }
 });
 
+app.get('/health', (req, res) => {
+    res.send('OK');
+});
+
+
 // Inicia el cliente y el servidor
 client.initialize();
 const PORT = process.env.PORT || 3000;
