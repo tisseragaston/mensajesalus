@@ -59,13 +59,3 @@ app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-const http = require('http');
-
-// Espera 5 minutos (300000 ms) antes de empezar a enviar pings
-setTimeout(() => {
-    setInterval(() => {
-        http.get('https://mensajesalus.onrender.com'); // Cambia a tu URL de producción
-        console.log('Ping enviado al servidor para mantenerlo activo.');
-    }, 60000); // 1 minuto
-}, 300000); // Espera 10 minutos
-
