@@ -47,11 +47,11 @@ app.post('/send-message', (req, res) => {
     console.log('Request body:', req.body);
 
     const message = req.body.message;
-    const chatId = '5492645161444@c.us';
+    const chatId = req.body.chatId;
 
-    if (!message) {
-        console.log('No message provided in the request');
-        return res.status(400).json({ error: 'Mensaje no proporcionado' });
+    if (!message || !chatId) {
+        console.log('Message or chatId not provided in the request');
+        return res.status(400).json({ error: 'Mensaje o chatId no proporcionado' });
     }
 
     client.sendMessage(chatId, message)
