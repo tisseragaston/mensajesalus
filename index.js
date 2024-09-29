@@ -81,6 +81,35 @@ app.post('/send-message', (req, res) => {
 });
 
 
+// Endpoint para el aviso de visita
+app.post('/notify-retirement', (req, res) => {
+    console.log('POST request received at /notify-retirement');
+    
+    const { rolUsuario, nombreUsuario, apellidoUsuario, nombrePaciente } = req.body;
+    
+    // Crear el mensaje a enviar
+    const message = `El ${rolUsuario}, ${nombreUsuario} ${apellidoUsuario}, visitó al paciente: ${nombrePaciente}.`;
+
+    // Número de WhatsApp a notificar
+    const chatId = '5492645161444@c.us'; // Formato de ID para WhatsApp
+
+    if (!message || !chatId) {
+        return res.status(400).json({ error: 'No se pudo enviar el mensaje, datos faltantes.' });
+    }
+
+    client.sendMessage(chatId, message)
+        .then(() => {
+            console.log('Mensaje enviado con éxito');
+            res.json({ message: 'Notificación de retiro enviada con éxito.' });
+        })
+        .catch((err) => {
+            console.error('Error al enviar la notificación de retiro:', err);
+            res.status(500).json({ error: 'Error al enviar la notificación', details: err.message });
+        });
+});
+
+
+
 // Ruta para acceder al QR en formato de imagen
 app.get('/qr', async (req, res) => {
     try {
